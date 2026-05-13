@@ -13,21 +13,20 @@ import java.sql.SQLException;
  * @author Aluno
  */
 public class Conexao {
-    private static final String url = "jdbc:mysql://localhost:9000/db_bidding_system";
-    private static final String user = "root";
-    private static final String senha = " ";
+     public static final String url = "jdbc:mysql://localhost:3307/db_bidding_system";
+    public static final String user = "root";
+    public static final String senha = "";
     private static Connection conn = null;
     
-    public Conexao() {
+    private Conexao(){
     }
     
-    public static synchronized Connection conectar() {
-        try {
-            if(conn == null|| conn.isClosed()) {
+    public static synchronized Connection conectar(){
+        try{
+            if(conn == null || conn.isClosed()){
                 conn = DriverManager.getConnection(url, user, senha);
             }
-            
-        } catch(SQLException e) {
+        } catch (SQLException e){
             e.printStackTrace();
         }
         return conn;

@@ -4,8 +4,8 @@
  */
 package com.bidding.system.bidding.repository;
 
+import com.bidding.system.bidding.model.EditalBean;
 import com.bidding.system.bidding.model.UserBean;
-import com.bidding.system.bidding.model.UserRequestBean;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -20,24 +20,24 @@ import org.springframework.stereotype.Repository;
 public class UserRepository {
     
     public void register(UserBean user) {
-        try{ 
+        try {
             Connection conn = Conexao.conectar();
             
             PreparedStatement stmt = null;
+            ResultSet rs = null;
             
-            stmt = conn.prepareStatement("insert into usuario (nome, email, senha, role)values(?,?,?,?)");
-            
+            stmt = conn.prepareStatement("INSERT INTO usuarios (nome, email, senha, role) VALUES (?,?,?,?)");
             stmt.setString(1, user.getNome());
             stmt.setString(2, user.getEmail());
             stmt.setString(3, user.getSenha());
             stmt.setString(4, user.getRole());
-            
+               
+
             int linhasAfetadas = stmt.executeUpdate();
-            if(linhasAfetadas == 0) {
-                throw new SQLException("Falha na atualização - nenhuma linha afetada");
+            if (linhasAfetadas == 0) {
+                throw new SQLException("Falha na atualização - Nenhuma linha foi afetada");
             }
-            
-        }catch(SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
@@ -70,5 +70,25 @@ public class UserRepository {
         }
         return user;
     }
+
     
+    public EditalBean criarEdital(EditalBean editais) {
+        try{
+            Connection conn = Conexao.conectar();
+            
+            PreparedStatement stmt = null;
+            ResultSet rs = null;
+            
+            stmt = conn.prepareStatement("insert into editais (titulo, descricao, data_fechamento, status) values (?,?,?,?)");
+            
+            stmt.setString(1, editais.getTitulo());
+
+            
+        } catch(SQLException e) {
+            e.printStackTrace();
+        }
+        
+        return editais;
+    }
 }
+    
