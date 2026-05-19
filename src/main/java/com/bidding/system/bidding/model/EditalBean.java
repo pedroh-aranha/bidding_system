@@ -11,7 +11,7 @@ import java.sql.Date;
  * @author Aluno
  */
 public class EditalBean {
-    private int id;
+    private Long id;
     private String titulo;
     private String descricao;
     private Date datafechamento;
@@ -20,7 +20,7 @@ public class EditalBean {
     public EditalBean() {
     }
 
-    public EditalBean(int id, String titulo, String descricao, Date datafechamento, String status) {
+    public EditalBean(long id, String titulo, String descricao, Date datafechamento, String status) {
         this.id = id;
         this.titulo = titulo;
         this.descricao = descricao;
@@ -28,11 +28,11 @@ public class EditalBean {
         this.status = status;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -68,5 +68,5 @@ public class EditalBean {
         this.status = status;
     }
 
-   
+     
 }

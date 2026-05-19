@@ -4,7 +4,6 @@
  */
 package com.bidding.system.bidding.repository;
 
-import com.bidding.system.bidding.model.EditalBean;
 import com.bidding.system.bidding.model.UserBean;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -61,6 +60,7 @@ public class UserRepository {
                 user.setId(rs.getLong("id"));
                 user.setNome(rs.getString("nome"));
                 user.setEmail(rs.getString("email"));
+                user.setSenha(rs.getString("senha"));
                 user.setRole(rs.getString("role"));
                 
             }
@@ -71,24 +71,6 @@ public class UserRepository {
         return user;
     }
 
-    
-    public EditalBean criarEdital(EditalBean editais) {
-        try{
-            Connection conn = Conexao.conectar();
-            
-            PreparedStatement stmt = null;
-            ResultSet rs = null;
-            
-            stmt = conn.prepareStatement("insert into editais (titulo, descricao, data_fechamento, status) values (?,?,?,?)");
-            
-            stmt.setString(1, editais.getTitulo());
-
-            
-        } catch(SQLException e) {
-            e.printStackTrace();
-        }
-        
-        return editais;
-    }
+ 
 }
     

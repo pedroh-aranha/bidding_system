@@ -18,21 +18,22 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Aluno
  */
 @RestController
-@RequestMapping("api/auth")
+@RequestMapping("/api/auth")
 public class UserController {
     
     @Autowired
-    private UserService service;
+    private UserService uservice;
     
     @PostMapping("/registrar")
     public String registrar(@RequestBody UserBean user) {
-        service.register(user);
+        uservice.register(user);
         return "Cadastro feito com sucesso";
     }
     
     @PostMapping("/logar")
     public String logar(@RequestBody UserRequestBean user) {
-        return service.login(user);
+        String token = uservice.login(user);
+        return token;
     }
     
 }
