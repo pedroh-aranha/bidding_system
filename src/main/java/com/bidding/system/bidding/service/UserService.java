@@ -34,7 +34,7 @@ public class UserService {
         } else if(user.getSenha().equals("")) {
             mensagem = "Senha não preenchida";
         }else if(user.getRole().equals("")) {
-            user.setRole("Fornecedor");
+            user.setRole("FORNECEDOR");
         }
         
         if(!mensagem.equals("")) {
@@ -55,7 +55,12 @@ public class UserService {
             throw new ResponseStatusException(HttpStatusCode.valueOf(400), mensagem);        
         }
         
-        UserBean usuarioLogado = repository.login(user.getEmail(), user.getSenha());
+         UserBean usuarioLogado = repository.login(user.getEmail(), user.getSenha());
+
+        if (usuarioLogado == null) {
+            throw new ResponseStatusException(HttpStatusCode.valueOf(401), "E-mail ou senha inválidos");
+        }
+
         return tservice.gerarToken(usuarioLogado);
-       }
+    }
 }

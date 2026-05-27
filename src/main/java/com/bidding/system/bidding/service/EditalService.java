@@ -54,8 +54,7 @@ public class EditalService {
     }
 
     public List<EditalBean> listaEdital(String authHeader) {
-        String token = authHeader.replace("Bearer ", "");
-        if (!tokenService.validarToken(token)) {
+        if (tokenService.validarToken(authHeader)) {
             throw new ResponseStatusException(HttpStatusCode.valueOf(401), "Logar com conta valida!");
         } else {
             return editalRepository.listaEdital();
