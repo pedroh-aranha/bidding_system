@@ -20,7 +20,7 @@ public class EditalBean {
     public EditalBean() {
     }
 
-    public EditalBean(long id, String titulo, String descricao, Date datafechamento, String status) {
+    public EditalBean(Long id, String titulo, String descricao, Date datafechamento, String status) {
         this.id = id;
         this.titulo = titulo;
         this.descricao = descricao;
@@ -28,11 +28,11 @@ public class EditalBean {
         this.status = status;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -68,5 +68,5 @@ public class EditalBean {
         this.status = status;
     }
 
-     
+   
 }

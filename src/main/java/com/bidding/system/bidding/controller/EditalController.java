@@ -47,10 +47,11 @@ public class EditalController {
 
     @GetMapping
     public List<EditalBean> listaEdital(@RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.replace("Bearer ", "");
         return editalService.listaEdital(authHeader);
     }
 
-    @PostMapping("/{id}/laces")
+    @PostMapping("/{id}/lances")
     public String registrarlance(@RequestHeader ("Authorization") String auth, @RequestBody LancesBean lance, @PathVariable long id) {
         String token = auth.replace("Bearer", "");
         lservice.criarLance(id, lance, token);

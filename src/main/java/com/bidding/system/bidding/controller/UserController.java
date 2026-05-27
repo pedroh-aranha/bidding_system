@@ -32,8 +32,7 @@ public class UserController {
     
     @PostMapping("/logar")
     public String logar(@RequestBody UserRequestBean user) {
-        String token = uservice.login(user);
-        return token;
+        return uservice.login(user);     
     }
     
 }

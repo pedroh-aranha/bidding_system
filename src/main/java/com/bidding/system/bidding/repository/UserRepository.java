@@ -21,56 +21,49 @@ public class UserRepository {
     public void register(UserBean user) {
         try {
             Connection conn = Conexao.conectar();
-            
-            PreparedStatement stmt = null;
-            ResultSet rs = null;
-            
-            stmt = conn.prepareStatement("INSERT INTO usuarios (nome, email, senha, role) VALUES (?,?,?,?)");
+            PreparedStatement stmt = conn.prepareStatement(
+                "INSERT INTO usuarios (nome, email, senha, role) VALUES (?,?,?,?)");
             stmt.setString(1, user.getNome());
             stmt.setString(2, user.getEmail());
             stmt.setString(3, user.getSenha());
             stmt.setString(4, user.getRole());
-               
 
             int linhasAfetadas = stmt.executeUpdate();
             if (linhasAfetadas == 0) {
-                throw new SQLException("Falha na atualização - Nenhuma linha foi afetada");
+                throw new SQLException("Nenhuma linha afetada");
             }
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new RuntimeException("Erro ao cadastrar: " + e.getMessage(), e); // ADICIONAR
         }
     }
     
     public UserBean login(String email, String senha) {
-        UserBean user = new UserBean();
-        try {
-            Connection conn = Conexao.conectar();
-            
-            PreparedStatement stmt = null;
-            ResultSet rs = null;
-            
-            stmt = conn.prepareStatement("select * from usuarios where email = ? and senha = ?");
-            
-            stmt.setString(1, email);
-            stmt.setString(2, senha);
-            
-            rs = stmt.executeQuery();
-            
-            if(rs.next()){
-                user.setId(rs.getLong("id"));
-                user.setNome(rs.getString("nome"));
-                user.setEmail(rs.getString("email"));
-                user.setSenha(rs.getString("senha"));
-                user.setRole(rs.getString("role"));
-                
-            }
-            
-        } catch(SQLException e) {
-            e.printStackTrace();
-        }
-        return user;
-    }
+    try {
+        Connection conn = Conexao.conectar();
+        PreparedStatement stmt = conn.prepareStatement(
+            "SELECT * FROM usuarios WHERE email = ? AND senha = ?");
+        stmt.setString(1, email);
+        stmt.setString(2, senha);
 
+        ResultSet rs = stmt.executeQuery();
+
+        if (rs.next()) {
+            UserBean user = new UserBean();
+            user.setId(rs.getLong("id"));
+            user.setNome(rs.getString("nome"));
+            user.setEmail(rs.getString("email"));
+            user.setSenha(rs.getString("senha"));
+            user.setRole(rs.getString("role"));
+            return user;
+        }
+        return null; 
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+        throw new RuntimeException("Erro ao buscar usuário: " + e.getMessage(), e); // RELANÇAR
+    }
+}
  
 }
     

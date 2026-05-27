@@ -33,12 +33,11 @@ public class LanceService {
     public void criarLance(Long id, LancesBean lance,String token) {
         if(tservice.validarToken(token)) {
             UserBean userLogado = tservice.extrairClaim(token);
-            
-            if(userLogado.getRole().equals("FORNECEDOR")) {
+            EditalBean edital = eservice.getbyid(id);
+            if(!userLogado.getRole().equals("FORNECEDOR")) {
                 throw new ResponseStatusException(HttpStatusCode.valueOf(403), "Você precisa ser fornecedor para cadastrar um lance");      
             }
             
-            EditalBean edital = eservice.getbyid(id);
             
             if(!edital.getStatus().equals("ABERTO")) {
                 throw new ResponseStatusException(HttpStatusCode.valueOf(400), "Edital ja fechado para lances");
