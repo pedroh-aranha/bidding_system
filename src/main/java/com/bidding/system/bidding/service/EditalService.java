@@ -55,10 +55,17 @@ public class EditalService {
 
     public List<EditalBean> listaEdital(String authHeader) {
         if (tokenService.validarToken(authHeader)) {
-            throw new ResponseStatusException(HttpStatusCode.valueOf(401), "Logar com conta valida!");
-        } else {
-            return editalRepository.listaEdital();
+                throw new ResponseStatusException(HttpStatusCode.valueOf(401), "Logar com conta valida!");
+            } else {
+                return editalRepository.listaEdital();
+            }
         }
+
+        public List<EditalBean> listaUrgentes(String authHeader) {
+        if (tokenService.validarToken(authHeader)) {
+            throw new ResponseStatusException(HttpStatusCode.valueOf(401), "Logar com conta valida!");
+        }
+        return editalRepository.listaUrgentes();
     }
     
 }

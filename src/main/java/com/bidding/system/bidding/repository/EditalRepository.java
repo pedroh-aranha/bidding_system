@@ -86,4 +86,27 @@ public class EditalRepository {
         return edital;
     }
     
+    public List<EditalBean> listaUrgentes() {
+    List<EditalBean> lista = new ArrayList<>();
+    try {
+        Connection conn = Conexao.conectar();
+        PreparedStatement stmt = conn.prepareStatement(
+            "SELECT * FROM editais WHERE data_fechamento BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 3 DAY)"
+        );
+        ResultSet rs = stmt.executeQuery();
+        while (rs.next()) {
+            EditalBean edital = new EditalBean();
+            edital.setId(rs.getLong("id"));
+            edital.setTitulo(rs.getString("titulo"));
+            edital.setDescricao(rs.getString("descricao"));
+            edital.setDatafechamento(rs.getDate("data_fechamento"));
+            edital.setStatus(rs.getString("status"));
+            lista.add(edital);
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return lista;
+}
+    
 }

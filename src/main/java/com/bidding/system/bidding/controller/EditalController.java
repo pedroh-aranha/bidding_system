@@ -50,6 +50,11 @@ public class EditalController {
         String token = authHeader.replace("Bearer ", "");
         return editalService.listaEdital(authHeader);
     }
+    
+    @GetMapping("/urgentes")
+    public List<EditalBean> listaUrgentes(@RequestHeader("Authorization") String authHeader) {
+        return editalService.listaUrgentes(authHeader);
+    }
 
     @PostMapping("/{id}/lances")
     public String registrarlance(@RequestHeader ("Authorization") String auth, @RequestBody LancesBean lance, @PathVariable long id) {
