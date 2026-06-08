@@ -13,9 +13,9 @@ import java.sql.SQLException;
  * @author Aluno
  */
 public class Conexao {
-     public static final String url = "jdbc:mysql://localhost:3307/db_bidding_system";
+     public static final String url = "jdbc:mysql://localhost:3306/db_bidding_system";
     public static final String user = "root";
-    public static final String senha = "";
+    public static final String senha = "@Peranha318";
     private static Connection conn = null;
     
     private Conexao(){
