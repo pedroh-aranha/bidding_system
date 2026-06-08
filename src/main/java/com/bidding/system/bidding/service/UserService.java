@@ -40,6 +40,11 @@ public class UserService {
         if(!mensagem.equals("")) {
             throw new ResponseStatusException(HttpStatusCode.valueOf(400), mensagem);
         }
+        
+        if (repository.emailJaExiste(user.getEmail())) {
+        throw new ResponseStatusException(HttpStatusCode.valueOf(400), "E-mail já cadastrado");
+        }
+        
         repository.register(user);
     }
     

@@ -27,13 +27,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/editais")
 public class EditalController {
-    
+
     @Autowired
     private EditalService editalService;
 
     @Autowired
     private TokenService tokenService;
-    
+
     @Autowired
     private LanceService lservice;
 
@@ -50,18 +50,25 @@ public class EditalController {
         String token = authHeader.replace("Bearer ", "");
         return editalService.listaEdital(authHeader);
     }
-    
+
     @GetMapping("/urgentes")
     public List<EditalBean> listaUrgentes(@RequestHeader("Authorization") String authHeader) {
         return editalService.listaUrgentes(authHeader);
     }
 
     @PostMapping("/{id}/lances")
-    public String registrarlance(@RequestHeader ("Authorization") String auth, @RequestBody LancesBean lance, @PathVariable long id) {
-        String token = auth.replace("Bearer", "");
+    public String registrarlance(@RequestHeader("Authorization") String auth, @RequestBody LancesBean lance, @PathVariable long id) {
+        String token = auth.replace("Bearer ", "");
         lservice.criarLance(id, lance, token);
         return "Lance registrado com sucesso";
-        
+
     }
-    
+
+    @GetMapping("/{id}/lances")
+    public List<LancesBean> listarLances(@PathVariable long id,
+            @RequestHeader("Authorization") String auth) {
+        String token = auth.replace("Bearer ", "");
+        return lservice.listarLancesDoEdital(id, token);
+    }
+
 }

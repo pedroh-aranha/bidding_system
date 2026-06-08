@@ -19,8 +19,8 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public class EditalRepository {
-    
-     public int novoEdital(EditalBean edital) {
+
+    public int novoEdital(EditalBean edital) {
         try {
             Connection conn = Conexao.conectar();
             PreparedStatement stmt = null;
@@ -55,7 +55,7 @@ public class EditalRepository {
                 edital.setDescricao(rs.getString("descricao"));
                 edital.setDatafechamento(rs.getDate("data_fechamento"));
                 edital.setStatus(rs.getString("status"));
-                
+
                 listaEdital.add(edital);
             }
         } catch (SQLException e) {
@@ -64,49 +64,61 @@ public class EditalRepository {
 
         return listaEdital;
     }
-    
+
     public EditalBean getbyid(Long id) {
         EditalBean edital = new EditalBean();
-        try{
+        try {
             Connection conn = Conexao.conectar();
-            
+
             PreparedStatement stmt = conn.prepareStatement("SELECT data_fechamento, status from editais where id = ?");
             stmt.setLong(1, id);
             ResultSet rs = stmt.executeQuery();
-            
-            if(rs.next()) {
-            edital.setDatafechamento(rs.getDate("data_fechamento"));
-            edital.setStatus(rs.getString("status"));
-            
+
+            if (rs.next()) {
+                edital.setDatafechamento(rs.getDate("data_fechamento"));
+                edital.setStatus(rs.getString("status"));
+
             }
-            
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return edital;
     }
-    
+
     public List<EditalBean> listaUrgentes() {
-    List<EditalBean> lista = new ArrayList<>();
-    try {
-        Connection conn = Conexao.conectar();
-        PreparedStatement stmt = conn.prepareStatement(
-            "SELECT * FROM editais WHERE data_fechamento BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 3 DAY)"
-        );
-        ResultSet rs = stmt.executeQuery();
-        while (rs.next()) {
-            EditalBean edital = new EditalBean();
-            edital.setId(rs.getLong("id"));
-            edital.setTitulo(rs.getString("titulo"));
-            edital.setDescricao(rs.getString("descricao"));
-            edital.setDatafechamento(rs.getDate("data_fechamento"));
-            edital.setStatus(rs.getString("status"));
-            lista.add(edital);
+        List<EditalBean> lista = new ArrayList<>();
+        try {
+            Connection conn = Conexao.conectar();
+            PreparedStatement stmt = conn.prepareStatement(
+                    "SELECT * FROM editais WHERE data_fechamento BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 3 DAY)"
+            );
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                EditalBean edital = new EditalBean();
+                edital.setId(rs.getLong("id"));
+                edital.setTitulo(rs.getString("titulo"));
+                edital.setDescricao(rs.getString("descricao"));
+                edital.setDatafechamento(rs.getDate("data_fechamento"));
+                edital.setStatus(rs.getString("status"));
+                lista.add(edital);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-    } catch (SQLException e) {
-        e.printStackTrace();
+        return lista;
     }
-    return lista;
-}
-    
+
+    public void encerrarVencidos() {
+        try {
+            Connection conn = Conexao.conectar();
+            PreparedStatement stmt = conn.prepareStatement(
+                    "UPDATE editais SET status = 'ENCERRADO' WHERE data_fechamento < NOW() AND status = 'ABERTO'"
+            );
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

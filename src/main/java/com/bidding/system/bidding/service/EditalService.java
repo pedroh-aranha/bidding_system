@@ -19,7 +19,7 @@ import org.springframework.web.server.ResponseStatusException;
  */
 @Service
 public class EditalService {
-    
+
     @Autowired
     private EditalRepository editalRepository;
 
@@ -54,18 +54,22 @@ public class EditalService {
     }
 
     public List<EditalBean> listaEdital(String authHeader) {
-        if (tokenService.validarToken(authHeader)) {
-                throw new ResponseStatusException(HttpStatusCode.valueOf(401), "Logar com conta valida!");
-            } else {
-                return editalRepository.listaEdital();
-            }
-        }
-
-        public List<EditalBean> listaUrgentes(String authHeader) {
-        if (tokenService.validarToken(authHeader)) {
+        
+        String token = authHeader.replace("Bearer ", "");
+        if (!tokenService.validarToken(token)) {
             throw new ResponseStatusException(HttpStatusCode.valueOf(401), "Logar com conta valida!");
         }
+        editalRepository.encerrarVencidos(); // ✅ encerra antes de listar
+        return editalRepository.listaEdital();
+    }
+
+    public List<EditalBean> listaUrgentes(String authHeader) {
+        String token = authHeader.replace("Bearer ", "");
+        if (!tokenService.validarToken(token)) {
+            throw new ResponseStatusException(HttpStatusCode.valueOf(401), "Logar com conta valida!");
+        }
+        editalRepository.encerrarVencidos(); // ✅ encerra antes de listar
         return editalRepository.listaUrgentes();
     }
-    
+
 }
