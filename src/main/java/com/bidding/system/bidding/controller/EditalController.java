@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -37,7 +38,7 @@ public class EditalController {
     @Autowired
     private LanceService lservice;
 
-    @PostMapping("/criar")
+    @PostMapping({"/criar", ""})
     public String criarEdital(@RequestBody EditalBean edital, @RequestHeader("Authorization") String authHeader) {
         String token = authHeader.replace("Bearer ", "");
         UserBean usuarioLogado = tokenService.extrairClaim(token);
@@ -46,9 +47,19 @@ public class EditalController {
     }
 
     @GetMapping
-    public List<EditalBean> listaEdital(@RequestHeader("Authorization") String authHeader) {
+    public List<EditalBean> listaEdital(
+            @RequestParam(required = false) String urgente,
+            @RequestHeader("Authorization") String authHeader) {
+        if ("true".equals(urgente)) {
+            return editalService.listaUrgentes(authHeader);
+        }
         String token = authHeader.replace("Bearer ", "");
         return editalService.listaEdital(authHeader);
+    }
+
+    @GetMapping("/{id}")
+    public EditalBean getEdital(@PathVariable long id, @RequestHeader("Authorization") String authHeader) {
+        return editalService.getEditalById(id, authHeader);
     }
 
     @GetMapping("/urgentes")
@@ -69,6 +80,12 @@ public class EditalController {
             @RequestHeader("Authorization") String auth) {
         String token = auth.replace("Bearer ", "");
         return lservice.listarLancesDoEdital(id, token);
+    }
+
+    @GetMapping("/lances/meus")
+    public List<LancesBean> meusLances(@RequestHeader("Authorization") String auth) {
+        String token = auth.replace("Bearer ", "");
+        return lservice.listarMeusLances(token);
     }
 
 }

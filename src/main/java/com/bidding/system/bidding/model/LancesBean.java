@@ -16,6 +16,12 @@ public class LancesBean {
     private Date data_lance;
     private Long idEdital;
     private Long idusuario;
+    
+    private String editalTitulo;
+    private Date editalDatafechamento;
+    private String editalStatus;
+    
+    private boolean vencedor;
 
     public LancesBean() {
     }
@@ -68,7 +74,35 @@ public class LancesBean {
         this.idusuario = idusuario;
     }
 
-    
-    
-       
+    public String getEditalTitulo() {
+        return editalTitulo;
+    }
+
+    public void setEditalTitulo(String editalTitulo) {
+        this.editalTitulo = editalTitulo;
+    }
+
+    public Date getEditalDatafechamento() {
+        return editalDatafechamento;
+    }
+
+    public void setEditalDatafechamento(Date editalDatafechamento) {
+        this.editalDatafechamento = editalDatafechamento;
+    }
+
+    public String getEditalStatus() {
+        return editalStatus;
+    }
+
+    public void setEditalStatus(String editalStatus) {
+        this.editalStatus = editalStatus;
+    }
+
+    public boolean isVencedor() {
+        return vencedor;
+    }
+
+    public void setVencedor(boolean vencedor) {
+        this.vencedor = vencedor;
+    }
 }

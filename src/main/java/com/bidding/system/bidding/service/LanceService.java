@@ -43,6 +43,10 @@ public class LanceService {
                 throw new ResponseStatusException(HttpStatusCode.valueOf(400), "Edital ja fechado para lances");
             }
 
+            if (lservice.temLance(id, userLogado.getId())) {
+                throw new ResponseStatusException(HttpStatusCode.valueOf(400), "Você já deu um lance neste edital");
+            }
+
             if (edital.getDatafechamento().before(lance.getData_lance())) {
                 throw new ResponseStatusException(HttpStatusCode.valueOf(400), "Data do lance posterior ao fechamento");
             }
@@ -65,7 +69,19 @@ public class LanceService {
         if (!tservice.validarToken(token)) {
             throw new ResponseStatusException(HttpStatusCode.valueOf(401), "Token invalido");
         }
+        UserBean userLogado = tservice.extrairClaim(token);
+        if (!userLogado.getRole().equals("COMPRADOR")) {
+            throw new ResponseStatusException(HttpStatusCode.valueOf(403), "Somente o comprador pode ver todos os lances");
+        }
         return lservice.listarPorEdital(idEdital);
+    }
+
+    public List<LancesBean> listarMeusLances(String token) {
+        if (!tservice.validarToken(token)) {
+            throw new ResponseStatusException(HttpStatusCode.valueOf(401), "Token inválido");
+        }
+        UserBean userLogado = tservice.extrairClaim(token);
+        return lservice.listarPorUsuario(userLogado.getId());
     }
 
 }

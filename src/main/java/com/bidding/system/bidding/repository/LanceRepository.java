@@ -43,7 +43,7 @@ public class LanceRepository {
         try {
             Connection conn = Conexao.conectar();
             PreparedStatement stmt = conn.prepareStatement(
-                    "SELECT * FROM lances WHERE id_edital = ?"
+                    "select * from lances where id_edital = ?"
             );
             stmt.setLong(1, idEdital);
             ResultSet rs = stmt.executeQuery();
@@ -56,6 +56,60 @@ public class LanceRepository {
                 l.setData_lance(rs.getDate("data_lance"));
                 l.setIdEdital(rs.getLong("id_edital"));
                 l.setIdusuario(rs.getLong("id_usuario"));
+                lances.add(l);
+            }
+            return lances;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
+    }
+
+    public boolean temLance(Long idEdital, Long idUsuario) {
+        try {
+            Connection conn = Conexao.conectar();
+            PreparedStatement stmt = conn.prepareStatement(
+                    "select 1 from lances where id_edital = ? and id_usuario = ?"
+            );
+            stmt.setLong(1, idEdital);
+            stmt.setLong(2, idUsuario);
+            ResultSet rs = stmt.executeQuery();
+            return rs.next();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public List<LancesBean> listarPorUsuario(Long idUsuario) {
+        try {
+            Connection conn = Conexao.conectar();
+            PreparedStatement stmt = conn.prepareStatement(
+                    "SELECT l.id, l.valor, l.data_lance, l.id_edital, l.id_usuario, "
+                    + "       e.titulo AS edital_titulo, e.data_fechamento AS edital_datafechamento, "
+                    + "       e.status AS edital_status, "
+                    + "       (e.status = 'ENCERRADO' AND l.valor = (SELECT MIN(valor) FROM lances WHERE id_edital = e.id)) AS vencedor "
+                    + "FROM lances l "
+                    + "JOIN editais e ON e.id = l.id_edital "
+                    + "WHERE l.id_usuario = ? "
+                    + "ORDER BY l.data_lance DESC"
+            );
+            stmt.setLong(1, idUsuario);
+            ResultSet rs = stmt.executeQuery();
+
+            List<LancesBean> lances = new ArrayList<>();
+            while (rs.next()) {
+                LancesBean l = new LancesBean();
+                l.setId(rs.getLong("id"));
+                l.setValor(rs.getDouble("valor"));
+                l.setData_lance(rs.getDate("data_lance"));
+                l.setIdEdital(rs.getLong("id_edital"));
+                l.setIdusuario(rs.getLong("id_usuario"));
+                // campos extras do JOIN 
+                l.setEditalTitulo(rs.getString("edital_titulo"));
+                l.setEditalDatafechamento(rs.getDate("edital_datafechamento"));
+                l.setEditalStatus(rs.getString("edital_status"));
+                l.setVencedor(rs.getBoolean("vencedor"));
                 lances.add(l);
             }
             return lances;

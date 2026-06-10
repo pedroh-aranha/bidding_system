@@ -41,6 +41,8 @@ public class EditalService {
         }
         if (edital.getDatafechamento() == null) {
             message += "Data não preenchida!";
+        } else if (edital.getDatafechamento().before(new java.sql.Date(System.currentTimeMillis()))) {
+        message += "Data de fechamento não pode ser no passado!";
         }
         if (!message.isEmpty()) {
             throw new ResponseStatusException(HttpStatusCode.valueOf(400), message);
@@ -70,6 +72,18 @@ public class EditalService {
         }
         editalRepository.encerrarVencidos(); // ✅ encerra antes de listar
         return editalRepository.listaUrgentes();
+    }
+    public EditalBean getEditalById(Long id, String authHeader) {
+        String token = authHeader.replace("Bearer ", "");
+        if (!tokenService.validarToken(token)) {
+            throw new ResponseStatusException(HttpStatusCode.valueOf(401), "Logar com conta valida!");
+        }
+        editalRepository.encerrarVencidos();
+        EditalBean edital = editalRepository.getEditalCompleto(id);
+        if (edital == null) {
+            throw new ResponseStatusException(HttpStatusCode.valueOf(404), "Edital não encontrado");
+        }
+        return edital;
     }
 
 }
