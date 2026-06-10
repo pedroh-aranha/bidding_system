@@ -70,7 +70,7 @@ public class EditalRepository {
         try {
             Connection conn = Conexao.conectar();
 
-            PreparedStatement stmt = conn.prepareStatement("SELECT data_fechamento, status from editais where id = ?");
+            PreparedStatement stmt = conn.prepareStatement("select data_fechamento, status from editais where id = ?");
             stmt.setLong(1, id);
             ResultSet rs = stmt.executeQuery();
 
@@ -91,7 +91,7 @@ public class EditalRepository {
         try {
             Connection conn = Conexao.conectar();
             PreparedStatement stmt = conn.prepareStatement(
-                    "SELECT * FROM editais WHERE data_fechamento BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 3 DAY)"
+                    "select * from editais where data_fechamento between CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 3 DAY)"
             );
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
@@ -113,12 +113,33 @@ public class EditalRepository {
         try {
             Connection conn = Conexao.conectar();
             PreparedStatement stmt = conn.prepareStatement(
-                    "UPDATE editais SET status = 'ENCERRADO' WHERE data_fechamento < NOW() AND status = 'ABERTO'"
+                    "update editais set status = 'ENCERRADO' where data_fechamento < now() and status = 'ABERTO'"
             );
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+    public EditalBean getEditalCompleto(Long id) {
+        EditalBean edital = null;
+        try {
+            Connection conn = Conexao.conectar();
+            PreparedStatement stmt = conn.prepareStatement("select * from editais where id = ?");
+            stmt.setLong(1, id);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                edital = new EditalBean();
+                edital.setId(rs.getLong("id"));
+                edital.setTitulo(rs.getString("titulo"));
+                edital.setDescricao(rs.getString("descricao"));
+                edital.setDatafechamento(rs.getDate("data_fechamento"));
+                edital.setStatus(rs.getString("status"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return edital;
     }
 
 }

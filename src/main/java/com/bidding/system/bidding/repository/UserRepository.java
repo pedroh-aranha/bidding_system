@@ -22,7 +22,7 @@ public class UserRepository {
         try {
             Connection conn = Conexao.conectar();
             PreparedStatement stmt = conn.prepareStatement(
-                    "INSERT INTO usuarios (nome, email, senha, role) VALUES (?,?,?,?)");
+                    "insert into usuarios (nome, email, senha, role) values (?,?,?,?)");
             stmt.setString(1, user.getNome());
             stmt.setString(2, user.getEmail());
             stmt.setString(3, user.getSenha());
@@ -42,7 +42,7 @@ public class UserRepository {
         try {
             Connection conn = Conexao.conectar();
             PreparedStatement stmt = conn.prepareStatement(
-                    "SELECT * FROM usuarios WHERE email = ? AND senha = ?");
+                    "select * from usuarios where email = ? and senha = ?");
             stmt.setString(1, email);
             stmt.setString(2, senha);
 
@@ -69,7 +69,7 @@ public class UserRepository {
         try {
             Connection conn = Conexao.conectar();
             PreparedStatement stmt = conn.prepareStatement(
-                    "SELECT id FROM usuarios WHERE email = ?"
+                    "select id from usuarios where email = ?"
             );
             stmt.setString(1, email);
             ResultSet rs = stmt.executeQuery();
