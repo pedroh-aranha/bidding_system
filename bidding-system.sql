@@ -103,6 +103,27 @@ INSERT INTO `usuarios` VALUES (1,'Admin Compras','admin@empresa.com','123456','C
 UNLOCK TABLES;
 
 --
+-- Table structure for table `vencedores_edital`
+--
+
+DROP TABLE IF EXISTS `vencedores_edital`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `vencedores_edital` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id_edital` int(11) NOT NULL,
+  `id_usuario` int(11) NOT NULL,
+  `valor_lance` decimal(10,2) NOT NULL,
+  `data_registro` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_edital` (`id_edital`),
+  KEY `id_usuario` (`id_usuario`),
+  CONSTRAINT `vencedores_edital_ibfk_1` FOREIGN KEY (`id_edital`) REFERENCES `editais` (`id`),
+  CONSTRAINT `vencedores_edital_ibfk_2` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Dumping events for database 'db_bidding_system'
 --
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

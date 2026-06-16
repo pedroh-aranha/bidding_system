@@ -11,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -19,6 +20,9 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public class EditalRepository {
+
+    @Autowired
+    private VencedorRepository vencedorRepository;
 
     public int novoEdital(EditalBean edital) {
         try {
@@ -91,7 +95,7 @@ public class EditalRepository {
         try {
             Connection conn = Conexao.conectar();
             PreparedStatement stmt = conn.prepareStatement(
-                    "select * from editais where data_fechamento between CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 3 DAY)"
+                    "select * from editais where data_fechamento between CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 2 DAY)"
             );
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
@@ -116,6 +120,10 @@ public class EditalRepository {
                     "update editais set status = 'ENCERRADO' where data_fechamento < now() and status = 'ABERTO'"
             );
             stmt.executeUpdate();
+
+            // Após encerrar os editais, registra os vencedores pendentes
+            vencedorRepository.registrarVencedoresPendentes();
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -140,6 +148,26 @@ public class EditalRepository {
             e.printStackTrace();
         }
         return edital;
+    }
+
+    /**
+     * Encerra um edital específico por ID e registra o vencedor pendente.
+     */
+    public void encerrarEditalPorId(Long id) {
+        try {
+            Connection conn = Conexao.conectar();
+            PreparedStatement stmt = conn.prepareStatement(
+                    "update editais set status = 'ENCERRADO' where id = ? and status = 'ABERTO'"
+            );
+            stmt.setLong(1, id);
+            stmt.executeUpdate();
+
+            // Após encerrar, registra o vencedor deste edital
+            vencedorRepository.registrarVencedoresPendentes();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
 }
