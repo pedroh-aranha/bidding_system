@@ -73,6 +73,7 @@ public class EditalService {
         editalRepository.encerrarVencidos(); // ✅ encerra antes de listar
         return editalRepository.listaUrgentes();
     }
+
     public EditalBean getEditalById(Long id, String authHeader) {
         String token = authHeader.replace("Bearer ", "");
         if (!tokenService.validarToken(token)) {
@@ -84,6 +85,33 @@ public class EditalService {
             throw new ResponseStatusException(HttpStatusCode.valueOf(404), "Edital não encontrado");
         }
         return edital;
+    }
+
+    /**
+     * Encerra manualmente um edital específico e registra o vencedor.
+     * Somente COMPRADOR pode executar.
+     */
+    public void encerrarEdital(Long id, String authHeader) {
+        String token = authHeader.replace("Bearer ", "");
+        if (!tokenService.validarToken(token)) {
+            throw new ResponseStatusException(HttpStatusCode.valueOf(401), "Token inválido");
+        }
+        UserBean usuario = tokenService.extrairClaim(token);
+        if (!"COMPRADOR".equals(usuario.getRole())) {
+            throw new ResponseStatusException(HttpStatusCode.valueOf(403),
+                    "Apenas COMPRADOR pode encerrar editais");
+        }
+
+        EditalBean edital = editalRepository.getEditalCompleto(id);
+        if (edital == null) {
+            throw new ResponseStatusException(HttpStatusCode.valueOf(404), "Edital não encontrado");
+        }
+        if ("ENCERRADO".equals(edital.getStatus())) {
+            throw new ResponseStatusException(HttpStatusCode.valueOf(400), "Edital já está encerrado");
+        }
+
+        // Encerra o edital e registra o vencedor
+        editalRepository.encerrarEditalPorId(id);
     }
 
 }

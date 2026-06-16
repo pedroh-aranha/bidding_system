@@ -88,4 +88,16 @@ public class EditalController {
         return lservice.listarMeusLances(token);
     }
 
+    /**
+     * POST /api/editais/{id}/encerrar
+     * Encerra manualmente um edital e registra o vencedor (menor lance).
+     * Somente COMPRADOR pode executar.
+     */
+    @PostMapping("/{id}/encerrar")
+    public String encerrarEdital(@PathVariable long id,
+            @RequestHeader("Authorization") String authHeader) {
+        editalService.encerrarEdital(id, authHeader);
+        return "Edital encerrado e vencedor registrado com sucesso";
+    }
+
 }
